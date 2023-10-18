@@ -24,7 +24,6 @@ export function useIsFirstRender(): boolean {
 }
 
 const Input: FC<InputProps> = (props) => {
-  console.log("рендер");
   const [value, setValue] = useState("");
   const isFirst = useIsFirstRender();
 
