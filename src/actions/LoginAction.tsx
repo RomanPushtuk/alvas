@@ -15,9 +15,13 @@ const loginAction = async (formData: FormData) => {
 
     cookieStore.set("accessToken", accessToken, {
       secure: true,
+      httpOnly: true,
+      expires: +new Date() + 120 * 1000 * 60,
     });
     cookieStore.set("refreshToken", refreshToken, {
       secure: true,
+      httpOnly: true,
+      expires: +new Date() + 240 * 1000 * 60,
     });
     redirect("/");
   } else {

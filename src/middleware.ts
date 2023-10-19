@@ -30,9 +30,11 @@ export async function middleware(request: NextRequest) {
         cookies.set("refreshToken", refreshToken);
         response.cookies.set("accessToken", accessToken, {
           secure: true,
+          httpOnly: true
         });
         response.cookies.set("refreshToken", refreshToken, {
           secure: true,
+          httpOnly: true
         });
         return response;
       }
