@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+
 export default function Error({
   error,
   reset,
@@ -8,9 +10,12 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <div>
-      <h2>Something went wrong! {error.message}</h2>
-      <button onClick={() => reset()}>Попробовать еще раз</button>
+    <div className="flex flex-col justify-center items-center p-10 rounded-md space-y-2 bg-white shadow-lg">
+      <h2 className="text-2xl font-semibold">{error.message}</h2>
+      <span>Please return to the login page</span>
+      <Button className="mt-4" onClick={() => reset()}>
+        Retry
+      </Button>
     </div>
   );
 }
