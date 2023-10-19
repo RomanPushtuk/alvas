@@ -1,8 +1,9 @@
 "use client";
 import { useState, useCallback, useTransition } from "react";
 import loginAction from "@/actions/LoginAction";
-import Input from "../Input";
 import useIsFirstRender from "@/hooks/useIsFirstRender";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 const Form = () => {
   const [isPending, startTransition] = useTransition();
@@ -45,10 +46,11 @@ const Form = () => {
 
   return (
     <form
-      className="p-10 space-y-4 bg-white shadow-lg rounded-md"
+      className="p-10 w-full space-y-4 bg-white shadow-lg rounded-md"
       onSubmit={handleSubmit}
     >
       <Input
+        id={"username"}
         name="username"
         type="text"
         placeholder="username"
@@ -56,6 +58,7 @@ const Form = () => {
         onChange={handleUsenameChange}
       />
       <Input
+        id={"password"}
         name="password"
         type="password"
         placeholder="password"
@@ -67,12 +70,12 @@ const Form = () => {
           username and password fields shouldn't be empty
         </p>
       )}
-      <button
-        className="w-full bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
+      <Button
+        className="w-full py-2 text-white rounded-md hover:bg-indigo-700"
         type="submit"
       >
-        Login
-      </button>
+        Log in
+      </Button>
     </form>
   );
 };

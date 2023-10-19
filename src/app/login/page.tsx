@@ -1,9 +1,9 @@
 import Hint from "@/components/Hint";
-import Form from "@/components/form_v2/Form";
+import Form from "@/components/Form";
 
 const Login = () => {
   return (
-    <div className="flex flex-col justify-between gap-5 ">
+    <div className="flex flex-col justify-between w-80 gap-5">
       <Hint />
       <Form />
     </div>
