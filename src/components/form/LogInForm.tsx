@@ -1,5 +1,5 @@
 "use client";
-
+import { useCallback, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -14,6 +14,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import loginAction from "@/actions/LoginAction";
 
 type FormData = {
   username: string;
@@ -21,27 +22,32 @@ type FormData = {
 };
 
 interface LoginFormProps {
-  action: (formData: FormData) => Promise<void>;
+  // action: (formData: FormData) => Promise<void>;
 }
 
-const LogInForm: React.FC<LoginFormProps> = ({ action }) => {
-  const FormSchema = z.object({
-    username: z.string().min(4, {
-      message: "Username must be at least 4 characters.",
-    }),
-    password: z.string().min(4, {
-      message: "Password must be at least 4 characters.",
-    }),
-  });
+const FormSchema = z.object({
+  username: z.string().min(4, {
+    message: "Username must be at least 4 characters.",
+  }),
+  password: z.string().min(4, {
+    message: "Password must be at least 4 characters.",
+  }),
+});
 
+const LogInForm: React.FC<LoginFormProps> = () => {
+  const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
 
-  const onSubmit = async (event: Event) => {
+  const onSubmit = async (event: any) => {
     event.preventDefault();
     try {
-      await action(form.getValues());
+      const data = new FormData(event.target);
+      startTransition(() => {
+        loginAction(data);
+      });
+      // await loginAction(form.getValues());
     } catch (error) {
       console.error("Login failed:", error);
     }

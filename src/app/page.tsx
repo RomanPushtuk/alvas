@@ -2,17 +2,13 @@ import { getJwtSecretKey } from "@/lib/auth";
 import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
-type CookieValue = {
-  value: string;
-};
-
 export default async function Home() {
   const cookieStore = cookies();
-
-  const { value }: CookieValue = cookieStore.get("refreshToken") || {
+  const { value } = cookieStore.get("refreshToken") || {
     value: "",
   };
-  const a = await jwtVerify(value, getJwtSecretKey());
+  const secret = getJwtSecretKey();
+  const parsedToken = await jwtVerify(value, secret);
 
   return (
     <main>
@@ -20,7 +16,7 @@ export default async function Home() {
         <h1 className="text-2xl font-semibold">You're logged in with JWT</h1>
         <h6 className="text-gray-600">Users from secure API endpoint</h6>
         <h2 className="text-lg text-indigo-700">
-          Username: {a.payload.username as string}
+          Username: {parsedToken.payload.username as string}
         </h2>
       </div>
     </main>
