@@ -1,58 +1,36 @@
 import { NextResponse } from "next/server";
-import { getJwtSecretKey, verifyJwtToken } from "./lib/auth";
-import { SignJWT } from "jose";
+import { generateToken, getJwtSecretKey, verifyJwtToken } from "./lib/auth";
 
 const isAuthPages = (url: string) =>
   ["/", "/logout"].some((page) => page.startsWith(url));
 
 export async function middleware(request: any) {
   const { url, nextUrl, cookies } = request;
-  console.log("pathname", nextUrl.pathname);
   const { value: refreshToken } = cookies.get("refreshToken") ?? {
     value: null,
   };
   const { value: accessToken } = cookies.get("accessToken") ?? { value: null };
 
-  const hasVerifiedAccessToken = await verifyJwtToken(accessToken);
-  const hasVerifiedRefreshToken = await verifyJwtToken(refreshToken);
-
-  console.log("hasVerifiedAccessToken", hasVerifiedAccessToken);
-  console.log("hasVerifiedRefreshToken", hasVerifiedRefreshToken);
+  const verifiedAccessToken = await verifyJwtToken(accessToken);
+  const verifiedRefreshToken = await verifyJwtToken(refreshToken);
 
   const isAuthPageRequested = isAuthPages(nextUrl.pathname);
 
   if (isAuthPageRequested) {
-    console.log("isAuthPageRequested");
-    if (!hasVerifiedAccessToken) {
-      if (!hasVerifiedRefreshToken) {
-        console.log("Протух и accessToken и refreshToken");
+    // go to the page that requires authentication
+    if (!verifiedAccessToken) {
+      if (!verifiedRefreshToken) {
         const response = NextResponse.redirect(new URL(`/login`, url));
         response.cookies.delete("accessToken");
         response.cookies.delete("refreshToken");
         return response;
       } else {
-        console.log("Протух и accessToken но refreshToken жив");
-        const accessToken = await new SignJWT({
-          username: hasVerifiedRefreshToken.username,
-          role: "admin",
-        })
-          .setProtectedHeader({ alg: "HS256" })
-          .setExpirationTime("120s")
-          .sign(getJwtSecretKey());
-
-        const refreshToken = await new SignJWT({
-          username: hasVerifiedRefreshToken.username,
-          role: "admin",
-        })
-          .setProtectedHeader({ alg: "HS256" })
-          .setExpirationTime("240s")
-          .sign(getJwtSecretKey());
-
+        const { username } = verifiedRefreshToken;
+        const accessToken = await generateToken({ username }, "120s");
+        const refreshToken = await generateToken({ username }, "240s");
         cookies.set("accessToken", accessToken, { secure: true });
         cookies.set("refreshToken", refreshToken, { secure: true });
       }
-    } else {
-      console.log("accessToken cdeжий");
     }
   }
 
