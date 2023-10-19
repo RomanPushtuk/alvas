@@ -31,7 +31,7 @@ const Input: FC<InputProps> = (props) => {
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setValue(event.target.value);
     },
-    [setValue]
+    [setValue],
   );
 
   const isError = value === "" && !isFirst;

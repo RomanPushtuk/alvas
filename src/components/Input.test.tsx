@@ -1,11 +1,10 @@
-import { render, screen } from '@testing-library/react';
-import Input from './Input';
+import { render, screen } from "@testing-library/react";
+import Input from "./Input";
 
-
-describe('Input', () => {
-  test('render input', () => {
+describe("Input", () => {
+  test("render input", () => {
     render(<Input />);
 
-    expect(true).toBe(true)
+    expect(true).toBe(true);
   });
 });
