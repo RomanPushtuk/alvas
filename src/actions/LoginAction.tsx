@@ -13,8 +13,12 @@ const loginAction = async (formData: FormData) => {
     const accessToken = await generateToken({ username }, "120s");
     const refreshToken = await generateToken({ username }, "240s");
 
-    cookieStore.set("accessToken", accessToken, { secure: true });
-    cookieStore.set("refreshToken", refreshToken, { secure: true });
+    cookieStore.set("accessToken", accessToken, {
+      secure: true,
+    });
+    cookieStore.set("refreshToken", refreshToken, {
+      secure: true,
+    });
     redirect("/");
   } else {
     throw new Error("Authentication failed");
